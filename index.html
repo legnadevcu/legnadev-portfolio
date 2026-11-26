@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio</title>
+    <meta name="description" content="Portfolio personal: proyectos, perfil y contacto." />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Applies the saved theme before first paint to avoid a flash. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          var dark =
+            saved === "dark" ||
+            (saved === null &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+        } catch (error) {
+          /* keep the default theme */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <!-- PHASE 1: real name / wordmark -->
+        <a class="wordmark" href="#inicio">Portfolio</a>
+
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href="#sobre-mi">Sobre mí</a>
+          <a href="#proyectos">Proyectos</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+
+        <button
+          class="theme-toggle"
+          type="button"
+          data-theme-toggle
+          aria-pressed="false"
+        >
+          <span class="theme-toggle__icon" aria-hidden="true"></span>
+          <span class="theme-toggle__label" data-theme-label>Modo oscuro</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <!-- PHASE 1: intro / about -->
+      <section class="section" id="sobre-mi" aria-labelledby="sobre-mi-title">
+        <div class="container">
+          <h1 class="section__title" id="sobre-mi-title">Sobre mí</h1>
+          <p class="section__lead">Contenido pendiente.</p>
+        </div>
+      </section>
+
+      <!-- PHASE 2: projects gallery -->
+      <section class="section" id="proyectos" aria-labelledby="proyectos-title">
+        <div class="container">
+          <h2 class="section__title" id="proyectos-title">Proyectos</h2>
+          <p class="section__lead">Galería pendiente.</p>
+        </div>
+      </section>
+
+      <!-- PHASE 3: contact -->
+      <section class="section" id="contacto" aria-labelledby="contacto-title">
+        <div class="container">
+          <h2 class="section__title" id="contacto-title">Contacto</h2>
+          <p class="section__lead">Formulario pendiente.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p>&copy; <span data-year>2026</span> — Portfolio</p>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
