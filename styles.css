@@ -534,12 +534,6 @@ button {
   justify-self: start;
 }
 
-.contact-form__hint {
-  color: var(--text-subtle);
-  font-size: var(--step--1);
-  line-height: 1.5;
-}
-
 .field {
   display: grid;
   gap: var(--space-1);

@@ -33,7 +33,7 @@ const projects = [
     image: "",
   },
 
-  // Copiá este bloque cuando termines un proyecto nuevo:
+  // Copy this block when a new project is ready:
   // {
   //   title: "",
   //   description: "",
