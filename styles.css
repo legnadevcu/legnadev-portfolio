@@ -567,7 +567,7 @@ button {
 
 .field textarea {
   min-height: 8rem;
-  resize: vertical;
+  resize: none;
 }
 
 .field input::placeholder,
