@@ -3,8 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Portfolio</title>
-    <meta name="description" content="Portfolio personal: proyectos, perfil y contacto." />
+    <title>Legna Ivett — Desarrollo web</title>
+    <meta
+      name="description"
+      content="Portfolio de Legna Ivett, estudiante de Ciencias Informáticas en la UCI (Cuba) y desarrolladora web."
+    />
     <meta name="color-scheme" content="light dark" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,13 +34,12 @@
       })();
     </script>
   </head>
-  <body>
+  <body data-birth-year="2006">
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <header class="site-header">
       <div class="container site-header__inner">
-        <!-- PHASE 1: real name / wordmark -->
-        <a class="wordmark" href="#inicio">Portfolio</a>
+        <a class="wordmark" href="#sobre-mi">Legna Ivett</a>
 
         <nav class="site-nav" aria-label="Navegación principal">
           <a href="#sobre-mi">Sobre mí</a>
@@ -58,11 +60,30 @@
     </header>
 
     <main id="contenido">
-      <!-- PHASE 1: intro / about -->
-      <section class="section" id="sobre-mi" aria-labelledby="sobre-mi-title">
+      <section class="hero" id="sobre-mi" aria-labelledby="hero-title">
         <div class="container">
-          <h1 class="section__title" id="sobre-mi-title">Sobre mí</h1>
-          <p class="section__lead">Contenido pendiente.</p>
+          <p class="hero__eyebrow">
+            <span class="hero__dot" aria-hidden="true"></span>
+            Estudiante de Ciencias Informáticas · Cuba
+          </p>
+
+          <h1 class="hero__title" id="hero-title">
+            Hola, soy <span class="hero__name">Legna Ivett</span>.
+          </h1>
+
+          <p class="hero__lead">
+            Soy cubana, tengo <span data-age>20</span> años y desde 2024 estudio
+            Ciencias Informáticas en la Universidad de Ciencias Informáticas
+            (UCI). Me encanta el desarrollo web.
+          </p>
+
+          <div class="hero__actions">
+            <a class="button button--primary" href="#proyectos">
+              Ver proyectos
+              <span aria-hidden="true">↓</span>
+            </a>
+            <a class="button button--ghost" href="#contacto">Hablemos</a>
+          </div>
         </div>
       </section>
 
@@ -85,7 +106,7 @@
 
     <footer class="site-footer">
       <div class="container site-footer__inner">
-        <p>&copy; <span data-year>2026</span> — Portfolio</p>
+        <p>&copy; <span data-year>2026</span> — Legna Ivett</p>
       </div>
     </footer>
 
