@@ -599,11 +599,21 @@ button {
   -webkit-backdrop-filter: blur(14px) saturate(160%);
 }
 
+.site-header.is-scrolled {
+  border-bottom-color: var(--border);
+}
+
 .site-header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .wordmark {
@@ -647,6 +657,74 @@ button {
 
 .site-nav a:hover::after {
   transform: scaleX(1);
+}
+
+.site-nav a[aria-current="page"] {
+  color: var(--text);
+}
+
+.site-nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* ==========================================================================
+   Nav toggle (mobile)
+   ========================================================================== */
+
+.nav-toggle {
+  display: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-elevated);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-toggle__bars {
+  position: relative;
+  display: block;
+  width: 1rem;
+  height: 1.5px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  transition: background-color var(--dur) var(--ease);
+}
+
+.nav-toggle__bars::before,
+.nav-toggle__bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: var(--radius-full);
+  background-color: currentColor;
+  transition: top var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.nav-toggle__bars::before {
+  top: -5px;
+}
+
+.nav-toggle__bars::after {
+  top: 5px;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars {
+  background-color: transparent;
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars::after {
+  top: 0;
+  transform: rotate(-45deg);
 }
 
 /* ==========================================================================
@@ -739,6 +817,15 @@ button {
   flex-wrap: wrap;
 }
 
+.site-footer__top {
+  color: var(--text-muted);
+  transition: color var(--dur) var(--ease);
+}
+
+.site-footer__top:hover {
+  color: var(--accent);
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
@@ -749,11 +836,49 @@ button {
     --space-8: 4.5rem;
   }
 
-  .site-nav {
-    display: none;
+  .nav-toggle {
+    display: grid;
   }
 
   .theme-toggle__label {
+    display: none;
+  }
+
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: grid;
+    gap: 0;
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    background-color: var(--bg-elevated);
+    box-shadow: var(--shadow-md);
+    font-size: var(--step-0);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-0.5rem);
+    transition: opacity var(--dur) var(--ease),
+      transform var(--dur) var(--ease), visibility var(--dur) var(--ease);
+  }
+
+  .site-nav.is-open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+
+  .site-nav a {
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .site-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .site-nav a::after {
     display: none;
   }
 }

@@ -8,6 +8,10 @@ const ageSlots = document.querySelectorAll("[data-age]");
 const birthDate = document.body.dataset.birthDate;
 const projectsRoot = document.querySelector("[data-projects]");
 const contactForm = document.querySelector("[data-contact-form]");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+const navToggle = document.querySelector("[data-nav-toggle]");
+const nav = document.querySelector("[data-nav]");
+const header = document.querySelector(".site-header");
 
 /** Cuba country code (53) plus the number, digits only. */
 const WHATSAPP_NUMBER = "5355335781";
@@ -50,6 +54,10 @@ function applyTheme(theme) {
 
   if (toggleLabel) {
     toggleLabel.textContent = theme === "dark" ? "Modo claro" : "Modo oscuro";
+  }
+
+  if (themeColorMeta) {
+    themeColorMeta.content = theme === "dark" ? "#050a14" : "#f6f9ff";
   }
 }
 
@@ -230,6 +238,88 @@ function setupContactForm() {
   });
 }
 
+/**
+ * Mobile menu: a disclosure that stays honest about its state.
+ * `aria-expanded` drives both the icon and the accessibility tree.
+ */
+function setupNav() {
+  if (!navToggle || !nav) return;
+
+  const isOpen = () => navToggle.getAttribute("aria-expanded") === "true";
+
+  const setOpen = (open) => {
+    nav.classList.toggle("is-open", open);
+    navToggle.setAttribute("aria-expanded", String(open));
+    navToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+  };
+
+  navToggle.addEventListener("click", () => {
+    setOpen(!isOpen());
+  });
+
+  nav.addEventListener("click", (event) => {
+    if (event.target.closest("a")) setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen()) {
+      setOpen(false);
+      navToggle.focus();
+    }
+  });
+
+  window
+    .matchMedia("(min-width: 721px)")
+    .addEventListener("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
+}
+
+/** Adds the header divider only once the page has moved. */
+function setupHeaderState() {
+  if (!header) return;
+
+  const update = () => {
+    header.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
+
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+}
+
+/** Marks the nav link of the section currently crossing the viewport middle. */
+function setupScrollSpy() {
+  const links = [...document.querySelectorAll('.site-nav a[href^="#"]')];
+  if (links.length === 0) return;
+
+  const sections = links
+    .map((link) => document.querySelector(link.getAttribute("href")))
+    .filter(Boolean);
+
+  if (sections.length === 0) return;
+
+  const setCurrent = (id) => {
+    links.forEach((link) => {
+      if (link.getAttribute("href") === `#${id}`) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setCurrent(entry.target.id);
+      });
+    },
+    { rootMargin: "-45% 0px -50% 0px" }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
 toggle?.addEventListener("click", () => {
   setTheme(isDark() ? "light" : "dark");
 });
@@ -241,4 +331,7 @@ if (yearSlot) {
 renderAge();
 renderProjects();
 setupContactForm();
+setupNav();
+setupHeaderState();
+setupScrollSpy();
 applyTheme(isDark() ? "dark" : "light");

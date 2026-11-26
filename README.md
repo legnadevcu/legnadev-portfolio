@@ -25,7 +25,19 @@ script.js     Theme switching and interactions
 2. Intro section ✅
 3. Projects gallery ✅
 4. Contact form (WhatsApp) ✅
-5. Responsive polish and accessibility pass
+5. Responsive polish and accessibility pass ✅
+
+## Accessibility notes
+
+- Skip link to the main content.
+- Semantic landmarks (`header`, `nav`, `main`, `section`, `footer`).
+- `aria-expanded` on the mobile menu, closable with `Escape`.
+- Nav links expose `aria-current` while their section is on screen.
+- Focus rings on every interactive element; card reveal also triggers on
+  `:focus-within`.
+- The hover reveal is wrapped in `@media (hover: hover)`, so touch devices never
+  get a permanently blurred image.
+- `prefers-reduced-motion` disables transitions and smooth scrolling.
 
 ## Adding a project
 
