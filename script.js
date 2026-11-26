@@ -7,6 +7,10 @@ const yearSlot = document.querySelector("[data-year]");
 const ageSlots = document.querySelectorAll("[data-age]");
 const birthDate = document.body.dataset.birthDate;
 const projectsRoot = document.querySelector("[data-projects]");
+const contactForm = document.querySelector("[data-contact-form]");
+
+/** Cuba country code (53) plus the number, digits only. */
+const WHATSAPP_NUMBER = "5355335781";
 
 /**
  * Project gallery data.
@@ -193,6 +197,39 @@ function renderProjects() {
   projectsRoot.append(fragment);
 }
 
+/**
+ * Turns the contact form into a WhatsApp deep link.
+ *
+ * There is no backend: the message is prefilled and WhatsApp opens in a new
+ * tab, so the visitor decides whether to send it. A synthetic anchor click is
+ * used instead of `window.open` because `noopener` makes `window.open` return
+ * null even when it succeeds.
+ */
+function setupContactForm() {
+  if (!contactForm) return;
+
+  contactForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const data = new FormData(contactForm);
+    const name = String(data.get("name") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+
+    if (!name || !message) return;
+
+    const text = `Hola Legna, soy ${name}.\n\n${message}`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.click();
+
+    contactForm.reset();
+  });
+}
+
 toggle?.addEventListener("click", () => {
   setTheme(isDark() ? "light" : "dark");
 });
@@ -203,4 +240,5 @@ if (yearSlot) {
 
 renderAge();
 renderProjects();
+setupContactForm();
 applyTheme(isDark() ? "dark" : "light");

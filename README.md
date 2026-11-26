@@ -24,7 +24,7 @@ script.js     Theme switching and interactions
 1. Repository and design system ✅
 2. Intro section ✅
 3. Projects gallery ✅
-4. Contact form (WhatsApp)
+4. Contact form (WhatsApp) ✅
 5. Responsive polish and accessibility pass
 
 ## Adding a project
