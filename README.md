@@ -78,6 +78,20 @@ Append one object per project:
 - Recommended screenshot size: 1280x800 (16:10).
 - Cards without `link` render as static cards, not links.
 
+## Cache busting
+
+GitHub Pages serves every file with `Cache-Control: max-age=600`, so a browser
+can keep an old `script.js` for up to 10 minutes after a deploy. That is how you
+end up with new HTML and an old script. Both assets carry a version query:
+
+```html
+<link rel="stylesheet" href="styles.css?v=20261126" />
+<script src="script.js?v=20261126" defer></script>
+```
+
+**Bump that number every time you change `styles.css` or `script.js`.** Changing
+only `index.html` does not need a bump.
+
 ## Local preview
 
 Open `index.html` directly in a browser, or serve the folder:
