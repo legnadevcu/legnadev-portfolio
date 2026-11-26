@@ -1,5 +1,7 @@
 # Portfolio
 
+**Live site:** https://legnadevcu.github.io/legnadev-portfolio/
+
 Personal portfolio as a single page, built with plain HTML, CSS and JavaScript.
 
 ## Structure
