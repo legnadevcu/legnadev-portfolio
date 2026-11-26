@@ -1,4 +1,5 @@
 const STORAGE_KEY = "theme";
+const LANG_KEY = "lang";
 
 const root = document.documentElement;
 const toggle = document.querySelector("[data-theme-toggle]");
@@ -12,22 +13,127 @@ const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 const navToggle = document.querySelector("[data-nav-toggle]");
 const nav = document.querySelector("[data-nav]");
 const header = document.querySelector(".site-header");
+const langButtons = [...document.querySelectorAll("[data-lang]")];
 
 /** Cuba country code (53) plus the number, digits only. */
 const WHATSAPP_NUMBER = "5355335781";
 
 /**
+ * Every piece of visible copy lives here, keyed once and translated twice.
+ * Markup references a key with data-i18n, so switching a language never
+ * touches the HTML structure.
+ */
+const TRANSLATIONS = {
+  es: {
+    "meta.title": "Legna Ivett — Desarrollo web",
+    "meta.description":
+      "Portfolio de Legna Ivett, estudiante de Ciencias Informáticas en la UCI (Cuba) y desarrolladora web.",
+    "meta.locale": "es_ES",
+
+    skip: "Saltar al contenido",
+    "nav.label": "Navegación principal",
+    "nav.about": "Sobre mí",
+    "nav.projects": "Proyectos",
+    "nav.contact": "Contacto",
+
+    "lang.label": "Idioma",
+    "theme.toDark": "Modo oscuro",
+    "theme.toLight": "Modo claro",
+    "menu.open": "Abrir menú",
+    "menu.close": "Cerrar menú",
+
+    "hero.eyebrow": "Estudiante de Ciencias Informáticas · Cuba",
+    "hero.greeting": "Hola, soy",
+    "hero.leadBefore": "Soy cubana, tengo",
+    "hero.leadAfter":
+      "años y desde 2024 estudio Ciencias Informáticas en la Universidad de Ciencias Informáticas (UCI). Me encanta el desarrollo web.",
+    "hero.ctaProjects": "Ver proyectos",
+    "hero.ctaContact": "Hablemos",
+
+    "projects.title": "Proyectos",
+    "projects.lead":
+      "Lo que voy construyendo mientras aprendo. Pasa el cursor sobre cada tarjeta para ver el proyecto con claridad.",
+    "projects.empty":
+      "Todavía no hay proyectos publicados. El primero está en camino.",
+
+    "contact.title": "Contacto",
+    "contact.lead":
+      "¿Tienes una idea, una propuesta o una duda? Escríbeme y te respondo por WhatsApp.",
+    "contact.direct": "Directo",
+    "contact.name": "Tu nombre",
+    "contact.namePlaceholder": "Ana Pérez",
+    "contact.message": "Tu mensaje",
+    "contact.messagePlaceholder": "Hola Legna, me gustaría...",
+    "contact.submit": "Enviar por WhatsApp",
+    "contact.whatsappIntro": "Hola Legna, soy",
+
+    "footer.top": "Volver arriba ↑",
+  },
+
+  en: {
+    "meta.title": "Legna Ivett — Web development",
+    "meta.description":
+      "Portfolio of Legna Ivett, Computer Science student at UCI (Cuba) and web developer.",
+    "meta.locale": "en_US",
+
+    skip: "Skip to content",
+    "nav.label": "Main navigation",
+    "nav.about": "About",
+    "nav.projects": "Projects",
+    "nav.contact": "Contact",
+
+    "lang.label": "Language",
+    "theme.toDark": "Dark mode",
+    "theme.toLight": "Light mode",
+    "menu.open": "Open menu",
+    "menu.close": "Close menu",
+
+    "hero.eyebrow": "Computer Science student · Cuba",
+    "hero.greeting": "Hi, I'm",
+    "hero.leadBefore": "I'm Cuban, I'm",
+    "hero.leadAfter":
+      "years old and I have been studying Computer Science at the University of Informatics Sciences (UCI) since 2024. I love web development.",
+    "hero.ctaProjects": "View projects",
+    "hero.ctaContact": "Let's talk",
+
+    "projects.title": "Projects",
+    "projects.lead":
+      "What I'm building while I learn. Hover over a card to see the project clearly.",
+    "projects.empty": "No projects published yet. The first one is on its way.",
+
+    "contact.title": "Contact",
+    "contact.lead":
+      "Do you have an idea, a proposal or a question? Write to me and I'll reply on WhatsApp.",
+    "contact.direct": "Direct",
+    "contact.name": "Your name",
+    "contact.namePlaceholder": "Ana Pérez",
+    "contact.message": "Your message",
+    "contact.messagePlaceholder": "Hi Legna, I would like...",
+    "contact.submit": "Send via WhatsApp",
+    "contact.whatsappIntro": "Hi Legna, I'm",
+
+    "footer.top": "Back to top ↑",
+  },
+};
+
+/**
  * Project gallery data.
  *
- * To add a project, append one object to this array. `image` is optional: when
- * it is missing, the card renders a gradient with the project's initial.
- * Use a screenshot at 16:10 for the best result (for example 1280x800).
+ * To add a project, append one object to this array. `title` and `description`
+ * hold one string per language. `image` is optional: when it is missing, the
+ * card renders a gradient with the project's initial. Use a screenshot at 16:10
+ * for the best result (for example 1280x800).
  */
 const projects = [
   {
-    title: "Portfolio personal",
-    description:
-      "Sitio de una sola página con modo claro/oscuro persistente, galería de proyectos y contacto directo por WhatsApp. Construido sin frameworks.",
+    title: {
+      es: "Portfolio personal",
+      en: "Personal portfolio",
+    },
+    description: {
+      es: "Sitio de una sola página con modo claro/oscuro persistente, galería de proyectos y contacto directo por WhatsApp. Construido sin frameworks.",
+      en: "Single-page site with persistent light/dark mode, a project gallery and direct WhatsApp contact. Built without frameworks.",
+    },
     tech: ["HTML", "CSS", "JavaScript"],
     link: "https://github.com/legnadevcu/legnadev-portfolio",
     image: "",
@@ -35,13 +141,20 @@ const projects = [
 
   // Copy this block when a new project is ready:
   // {
-  //   title: "",
-  //   description: "",
+  //   title: { es: "", en: "" },
+  //   description: { es: "", en: "" },
   //   tech: ["", ""],
   //   link: "",
   //   image: "",
   // },
 ];
+
+let currentLang = "es";
+
+/** Reads a translation key for the active language, falling back to Spanish. */
+function t(key) {
+  return TRANSLATIONS[currentLang]?.[key] ?? TRANSLATIONS.es[key] ?? key;
+}
 
 const isDark = () => root.dataset.theme === "dark";
 
@@ -53,7 +166,7 @@ function applyTheme(theme) {
   }
 
   if (toggleLabel) {
-    toggleLabel.textContent = theme === "dark" ? "Modo claro" : "Modo oscuro";
+    toggleLabel.textContent = t(theme === "dark" ? "theme.toLight" : "theme.toDark");
   }
 
   if (themeColorMeta) {
@@ -71,6 +184,73 @@ function setTheme(theme, { persist = true } = {}) {
   } catch (error) {
     /* storage unavailable: the theme still applies for this visit */
   }
+}
+
+function updateNavToggleLabel() {
+  if (!navToggle) return;
+
+  const open = navToggle.getAttribute("aria-expanded") === "true";
+  navToggle.setAttribute("aria-label", t(open ? "menu.close" : "menu.open"));
+}
+
+/**
+ * Rewrites every translatable node from the active dictionary.
+ *
+ * Text goes through `textContent`, never `innerHTML`, so a translation can
+ * never inject markup. Attributes that are not text (placeholder, aria-label,
+ * meta content) get their own data attribute.
+ */
+function applyLanguage(lang) {
+  currentLang = lang;
+  root.lang = lang;
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    element.textContent = t(element.dataset.i18n);
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = t(element.dataset.i18nPlaceholder);
+  });
+
+  document.querySelectorAll("[data-i18n-aria]").forEach((element) => {
+    element.setAttribute("aria-label", t(element.dataset.i18nAria));
+  });
+
+  document.querySelectorAll("[data-i18n-content]").forEach((element) => {
+    element.setAttribute("content", t(element.dataset.i18nContent));
+  });
+
+  langButtons.forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+  });
+
+  applyTheme(isDark() ? "dark" : "light");
+  updateNavToggleLabel();
+  renderProjects();
+}
+
+function setLanguage(lang, { persist = true } = {}) {
+  applyLanguage(lang);
+
+  if (!persist) return;
+
+  try {
+    localStorage.setItem(LANG_KEY, lang);
+  } catch (error) {
+    /* storage unavailable: the language still applies for this visit */
+  }
+}
+
+/** Saved choice first, then the browser preference, then Spanish. */
+function detectLanguage() {
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === "es" || saved === "en") return saved;
+  } catch (error) {
+    /* fall through to the browser preference */
+  }
+
+  return navigator.language?.toLowerCase().startsWith("en") ? "en" : "es";
 }
 
 /**
@@ -141,7 +321,7 @@ function createProjectCard(project) {
     const initial = document.createElement("span");
     initial.className = "project-card__initial";
     initial.setAttribute("aria-hidden", "true");
-    initial.textContent = project.title.charAt(0).toUpperCase();
+    initial.textContent = project.title[currentLang].charAt(0).toUpperCase();
     media.append(initial);
   }
 
@@ -150,11 +330,11 @@ function createProjectCard(project) {
 
   const title = document.createElement("h3");
   title.className = "project-card__title";
-  title.textContent = project.title;
+  title.textContent = project.title[currentLang];
 
   const description = document.createElement("p");
   description.className = "project-card__desc";
-  description.textContent = project.description;
+  description.textContent = project.description[currentLang];
 
   const tech = document.createElement("ul");
   tech.className = "project-card__tech";
@@ -190,8 +370,7 @@ function renderProjects() {
   if (projects.length === 0) {
     const empty = document.createElement("p");
     empty.className = "projects__empty";
-    empty.textContent =
-      "Todavía no hay proyectos publicados. El primero está en camino.";
+    empty.textContent = t("projects.empty");
     projectsRoot.append(empty);
     return;
   }
@@ -225,7 +404,8 @@ function setupContactForm() {
 
     if (!name || !message) return;
 
-    const text = `Hola Legna, soy ${name}.\n\n${message}`;
+    const intro = t("contact.whatsappIntro");
+    const text = `${intro} ${name}.\n\n${message}`;
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
     const link = document.createElement("a");
@@ -250,7 +430,7 @@ function setupNav() {
   const setOpen = (open) => {
     nav.classList.toggle("is-open", open);
     navToggle.setAttribute("aria-expanded", String(open));
-    navToggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+    updateNavToggleLabel();
   };
 
   navToggle.addEventListener("click", () => {
@@ -273,6 +453,15 @@ function setupNav() {
     .addEventListener("change", (event) => {
       if (event.matches) setOpen(false);
     });
+}
+
+function setupLanguageSwitch() {
+  langButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.lang === currentLang) return;
+      setLanguage(button.dataset.lang);
+    });
+  });
 }
 
 /** Adds the header divider only once the page has moved. */
@@ -329,9 +518,9 @@ if (yearSlot) {
 }
 
 renderAge();
-renderProjects();
+applyLanguage(detectLanguage());
 setupContactForm();
 setupNav();
+setupLanguageSwitch();
 setupHeaderState();
 setupScrollSpy();
-applyTheme(isDark() ? "dark" : "light");

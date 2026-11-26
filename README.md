@@ -21,6 +21,23 @@ script.js     Theme switching and interactions
 - **Theme:** follows `prefers-color-scheme` on first visit and remembers the
   user's choice in `localStorage`.
 
+## Languages
+
+The site ships in Spanish and English. A switch in the header stores the choice
+in `localStorage` and falls back to the browser language on the first visit.
+
+Copy lives in the `TRANSLATIONS` object at the top of `script.js`. Markup points
+at a key instead of holding the text:
+
+```html
+<h2 data-i18n="projects.title">Proyectos</h2>
+<input data-i18n-placeholder="contact.namePlaceholder" />
+<meta data-i18n-content="meta.description" />
+```
+
+To add a language, add one entry to `TRANSLATIONS` and one button with
+`data-lang="<code>"` to the header.
+
 ## Phases
 
 1. Repository and design system ✅

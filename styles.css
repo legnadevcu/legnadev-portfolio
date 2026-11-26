@@ -610,6 +610,38 @@ button {
   gap: var(--space-2);
 }
 
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background-color: var(--bg-elevated);
+  box-shadow: var(--shadow-sm);
+}
+
+.lang-switch__btn {
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-full);
+  color: var(--text-subtle);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  transition: background-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.lang-switch__btn[aria-pressed="true"] {
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.lang-switch__btn[aria-pressed="false"]:hover {
+  color: var(--text);
+}
+
 .wordmark {
   font-family: var(--font-display);
   font-size: var(--step-0);
@@ -874,6 +906,20 @@ button {
 
   .site-nav a::after {
     display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .site-header__actions {
+    gap: var(--space-1);
+  }
+
+  .lang-switch__btn {
+    padding-inline: 0.4rem;
+  }
+
+  .wordmark {
+    font-size: var(--step--1);
   }
 }
 
