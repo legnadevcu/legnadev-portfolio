@@ -21,11 +21,31 @@ script.js     Theme switching and interactions
 
 ## Phases
 
-1. Repository and design system
-2. Intro section
-3. Projects gallery
+1. Repository and design system ✅
+2. Intro section ✅
+3. Projects gallery ✅
 4. Contact form (WhatsApp)
 5. Responsive polish and accessibility pass
+
+## Adding a project
+
+The gallery is rendered from the `projects` array at the top of `script.js`.
+Append one object per project:
+
+```js
+{
+  title: "To-Do con persistencia",
+  description: "Gestor de tareas con filtros y datos guardados en localStorage.",
+  tech: ["HTML", "CSS", "JavaScript"],
+  link: "https://github.com/legnadevcu/todo-app",
+  image: "assets/todo.png",
+}
+```
+
+- `image` is optional. Without it the card shows a gradient with the project's
+  initial. With it, the screenshot stays blurred until hover.
+- Recommended screenshot size: 1280x800 (16:10).
+- Cards without `link` render as static cards, not links.
 
 ## Local preview
 
