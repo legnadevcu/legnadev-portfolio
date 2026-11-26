@@ -5,7 +5,7 @@ const toggle = document.querySelector("[data-theme-toggle]");
 const toggleLabel = document.querySelector("[data-theme-label]");
 const yearSlot = document.querySelector("[data-year]");
 const ageSlots = document.querySelectorAll("[data-age]");
-const birthYear = Number(document.body.dataset.birthYear);
+const birthDate = document.body.dataset.birthDate;
 const projectsRoot = document.querySelector("[data-projects]");
 
 /**
@@ -62,14 +62,48 @@ function setTheme(theme, { persist = true } = {}) {
 }
 
 /**
- * Derives the current age from the birth year declared on <body>.
- * It runs on every page load, so the number stays correct as years pass
- * without touching the markup again.
+ * Parses an ISO date (YYYY-MM-DD) as a local calendar date.
+ *
+ * `new Date("2006-03-02")` is read as UTC midnight, which in a negative
+ * timezone becomes March 1st. Building the date from its parts keeps the
+ * calendar day the same everywhere.
+ */
+function parseLocalDate(isoDate) {
+  const parts = String(isoDate ?? "").split("-").map(Number);
+
+  if (parts.length !== 3 || parts.some((part) => !Number.isInteger(part))) {
+    return null;
+  }
+
+  const [year, month, day] = parts;
+  const date = new Date(year, month - 1, day);
+
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function calculateAge(birth) {
+  const today = new Date();
+  const age = today.getFullYear() - birth.getFullYear();
+
+  const hasHadBirthday =
+    today.getMonth() > birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() &&
+      today.getDate() >= birth.getDate());
+
+  return hasHadBirthday ? age : age - 1;
+}
+
+/**
+ * Derives the exact current age from the birth date declared on <body>.
+ * It runs on every page load, so the number flips on the birthday itself
+ * and never needs to be edited again.
  */
 function renderAge() {
-  if (!Number.isFinite(birthYear) || birthYear <= 0) return;
+  const birth = parseLocalDate(birthDate);
 
-  const age = new Date().getFullYear() - birthYear;
+  if (!birth) return;
+
+  const age = calculateAge(birth);
 
   ageSlots.forEach((slot) => {
     slot.textContent = String(age);
